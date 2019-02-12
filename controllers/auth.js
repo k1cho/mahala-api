@@ -1,20 +1,24 @@
-const joi = require('joi')
+const User = require('../models/user')
+const Helpers = require('../helpers/helpers')
 
-exports.register = (req, res) => {
-    const schema = joi.object().keys({
-        username: joi.string().min(4).max(32).required(),
-        email: joi.string().email().min(4).max(32).required(),
-        password: joi.string().min(4).max(32).required()
+exports.register = async (req, res) => {
+    const email = await User.findOne({
+        email: Helpers.lowerCase(req.body.email)
     })
 
-    const {
-        error,
-        value
-    } = joi.validate(req.body, schema)
+    if (email) {
+        return res.status(409).json({
+            message: 'Email already exists.'
+        })
+    }
 
-    if (error && error.details) {
-        return res.status(422).json({
-            message: error.details
+    const username = await User.findOne({
+        username: Helpers.firstUppercase(req.body.username)
+    })
+
+    if (username) {
+        return res.status(409).json({
+            message: 'Username already exists.'
         })
     }
 }

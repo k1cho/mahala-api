@@ -33,5 +33,6 @@ mongoose.connect(dbConfig.mongoConnectionUrl, {
     .catch(() => {
         console.log('Connection error');
     })
+mongoose.set('useCreateIndex', true);
 
 module.exports = app;
