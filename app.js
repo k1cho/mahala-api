@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const dbConfig = require('./config/secret')
+const cookieParser = require('cookie-parser')
 
 const app = express()
 
@@ -20,7 +21,7 @@ app.use(express.urlencoded({
     extended: true,
     limit: '50mb'
 }))
-
+app.use(cookieParser())
 app.use('/api/mahala', authRoutes)
 
 mongoose.Promise = global.Promise

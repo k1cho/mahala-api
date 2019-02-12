@@ -1,6 +1,8 @@
 const User = require('../models/user')
 const Helpers = require('../helpers/helpers')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const dbConfig = require('../config/secret')
 
 exports.register = async (req, res) => {
     const email = await User.findOne({
@@ -24,20 +26,28 @@ exports.register = async (req, res) => {
     }
 
     bcrypt.hash(req.body.password, 10).then((result) => {
-        const user = new User({
+        const user = {
             username: Helpers.firstUppercase(req.body.username),
             email: Helpers.lowerCase(req.body.email),
             password: result
-        })
+        }
 
-        user.save((err) => {
-            if (err) {
-                return res.status(422).send({
-                    message: err.message
-                })
-            }
+        User.create(user).then(user => {
+            const token = jwt.sign({
+                data: user
+            }, dbConfig.secret, {
+                expiresIn: '24h'
+            })
+            res.cookie('auth', token)
+
             return res.status(201).json({
-                message: 'Successfully registered.'
+                message: 'User created successfully.',
+                user,
+                token
+            })
+        }).catch(err => {
+            return res.status(422).json({
+                message: 'Error occured.'
             })
         })
     })
