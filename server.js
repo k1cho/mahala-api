@@ -1,26 +1,54 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const dbConfig = require('./config/secret')
-const cookieParser = require('cookie-parser')
-const logger = require('morgan')
-
-const app = express()
-
-app.use(cookieParser)
-app.use(logger('dev'))
-
-mongoose.Promise = global.Promise
-mongoose.connect(dbConfig.mongoConnectionUrl, {
-        useNewUrlParser: true
-    })
-    .then(() => {
-        console.log('Connected to database');
-    })
-    .catch(() => {
-        console.log('Connection error');
-    })
+const http = require('http');
+const debug = require('debug', 'node-angular');
+const app = require('./app');
 
 
-app.listen(3000, () => {
-    console.log('Running on port 3000')
-})
+const normalizePort = val => {
+    var port = parseInt(val, 10);
+
+    if (isNaN(port)) {
+        return val;
+    }
+
+    if (port >= 0) {
+        return port;
+    }
+
+    return false;
+};
+
+const onError = error => {
+    if (error.syscall !== "listen") {
+        throw error;
+    }
+
+    const bind = typeof addr === "string" ? "pipe " + addr : "port " + port;
+    switch (error.code) {
+        case "EACCESS":
+            console.error(bind + " required elevated privileges");
+            process.exit(1);
+            break;
+
+        case "EADDRINUSE":
+            console.error(bind + " is already in use");
+            process.exit(1);
+            break;
+
+        default:
+            throw error;
+    }
+};
+
+const onListening = () => {
+    const addr = server.address();
+    const bind = typeof addr === "string" ? "pipe " + addr : "port " + port;
+    debug("Listening on " + bind);
+};
+
+const port = normalizePort(process.env.PORT || "3001");
+app.set("port", port);
+
+const server = http.createServer(app);
+server.on("error", onError);
+server.on("listening", onListening);
+server.listen(port);
