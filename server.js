@@ -1,10 +1,16 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const dbConfig = require('./config/secret')
+const cookieParser = require('cookie-parser')
+const logger = require('morgan')
 
 const app = express()
 
+app.use(cookieParser)
+app.use(logger('dev'))
+
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb+srv://bkichob:ZzK6J1LfqjbApbeP@cluster0-r1ldt.mongodb.net/test?retryWrites=true', {
+mongoose.connect(dbConfig.mongoConnectionUrl, {
         useNewUrlParser: true
     })
     .then(() => {
