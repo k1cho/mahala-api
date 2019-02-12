@@ -1,0 +1,15 @@
+{
+  "name": "mahala-api",
+  "version": "1.0.0",
+  "description": "API for MEAN Social Network",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "k1cho",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "mongoose": "^5.4.11"
+  }
+}
