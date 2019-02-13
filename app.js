@@ -5,8 +5,9 @@ const cookieParser = require('cookie-parser')
 
 const app = express()
 
-const authRoutes = require('./routes/auth')
+app.use(cookieParser())
 
+// app headers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Authorization, Origin, X-Request-With, Content-Type, Accept');
@@ -21,9 +22,15 @@ app.use(express.urlencoded({
     extended: true,
     limit: '50mb'
 }))
-app.use(cookieParser())
+
+
+// routes
+const authRoutes = require('./routes/auth')
+
 app.use('/api/mahala', authRoutes)
 
+
+// mongo connection
 mongoose.Promise = global.Promise
 mongoose.connect(dbConfig.mongoConnectionUrl, {
         useNewUrlParser: true
@@ -35,5 +42,6 @@ mongoose.connect(dbConfig.mongoConnectionUrl, {
         console.log('Connection error');
     })
 mongoose.set('useCreateIndex', true);
+
 
 module.exports = app;

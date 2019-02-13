@@ -5,6 +5,13 @@ const jwt = require('jsonwebtoken')
 const dbConfig = require('../config/secret')
 
 exports.register = async (req, res) => {
+
+    if (!req.body.email || !req.body.password || !req.body.username) {
+        return res.status(422).send({
+            message: 'Please provide Username, Email and Password.'
+        })
+    }
+
     const email = await User.findOne({
         email: Helpers.lowerCase(req.body.email)
     })
@@ -22,6 +29,12 @@ exports.register = async (req, res) => {
     if (username) {
         return res.status(409).json({
             message: 'Username already exists.'
+        })
+    }
+
+    if (req.body.password !== req.body.passwordConfirm) {
+        return res.status(422).send({
+            message: 'Password and password confirmation do not match.'
         })
     }
 
