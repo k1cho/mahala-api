@@ -65,3 +65,45 @@ exports.register = async (req, res) => {
         })
     })
 }
+
+exports.login = async (req, res) => {
+    if (!req.body.username || !req.body.password) {
+        return res.status(422).json({
+            message: 'Please enter Username and Password.'
+        })
+    }
+
+    await User.findOne({
+        username: Helpers.firstUppercase(req.body.username)
+    }).then(user => {
+        if (!user) {
+            return res.status(422).json({
+                message: 'Username not found.'
+            })
+        }
+
+        return bcrypt.compare(req.body.password, user.password).then((result) => {
+            if (!result) {
+                return res.status(422).json({
+                    message: 'Password is incorrect.'
+                })
+            }
+            const token = jwt.sign({
+                data: user
+            }, dbConfig.secret, {
+                expiresIn: '24h'
+            })
+            res.cookie('auth', token)
+            return res.status(200).json({
+                message: 'Successfully logged in.',
+                user,
+                token
+            })
+        })
+    }).catch(err => {
+        return res.status(422).json({
+            message: 'Error occured.'
+        })
+    })
+
+}
