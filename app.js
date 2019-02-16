@@ -31,7 +31,7 @@ const authRoutes = require('./routes/auth')
 const postRoutes = require('./routes/post')
 
 app.use('/api/mahala', authRoutes)
-app.use('/api/mahala', postRoutes)
+app.use('/api/mahala/posts/', postRoutes)
 
 
 // mongo connection
