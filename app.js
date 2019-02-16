@@ -25,7 +25,6 @@ app.use(express.urlencoded({
     limit: '50mb'
 }))
 
-
 // routes
 const authRoutes = require('./routes/auth')
 const postRoutes = require('./routes/post')
