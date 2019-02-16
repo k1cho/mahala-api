@@ -2,8 +2,12 @@ const express = require('express')
 const mongoose = require('mongoose')
 const dbConfig = require('./config/secret')
 const cookieParser = require('cookie-parser')
+const http = require('http');
 
 const app = express()
+const port = 3001;
+const server = http.createServer(app)
+const io = require('socket.io')(server)
 
 app.use(cookieParser())
 
@@ -25,14 +29,6 @@ app.use(express.urlencoded({
     limit: '50mb'
 }))
 
-// routes
-const authRoutes = require('./routes/auth')
-const postRoutes = require('./routes/post')
-
-app.use('/api/mahala', authRoutes)
-app.use('/api/mahala/posts/', postRoutes)
-
-
 // mongo connection
 mongoose.Promise = global.Promise
 mongoose.connect(dbConfig.mongoConnectionUrl, {
@@ -46,5 +42,19 @@ mongoose.connect(dbConfig.mongoConnectionUrl, {
     })
 mongoose.set('useCreateIndex', true);
 
+require('./socket/streams')(io)
+
+
+// routes
+const authRoutes = require('./routes/auth')
+const postRoutes = require('./routes/post')
+
+app.use('/api/mahala', authRoutes)
+app.use('/api/mahala/posts/', postRoutes)
+
+
+
+
+server.listen(port)
 
 module.exports = app;
