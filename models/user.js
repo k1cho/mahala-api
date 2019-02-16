@@ -21,7 +21,11 @@ const userSchema = mongoose.Schema({
         min: [4, 'Too short, min is 4 characters'],
         max: [32, 'Too long, max is 32 characters'],
         required: 'Password is required'
-    }
+    },
+    posts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
 })
 
 module.exports = mongoose.model('User', userSchema)

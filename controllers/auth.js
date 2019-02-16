@@ -47,9 +47,7 @@ exports.register = async (req, res) => {
 
         User.create(user).then(user => {
             const token = jwt.sign({
-                userId: user.id,
-                email: user.email,
-                username: user.username
+                data: user
             }, dbConfig.secret, {
                 expiresIn: '24h'
             })
@@ -91,9 +89,7 @@ exports.login = async (req, res) => {
                 })
             }
             const token = jwt.sign({
-                userId: user.id,
-                email: user.email,
-                username: user.username
+                data: user
             }, dbConfig.secret, {
                 expiresIn: '24h'
             })
