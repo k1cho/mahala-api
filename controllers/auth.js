@@ -82,7 +82,7 @@ exports.login = async (req, res) => {
             })
         }
 
-        return bcrypt.compare(req.body.password, user.password).then((result) => {
+        bcrypt.compare(req.body.password, user.password).then((result) => {
             if (!result) {
                 return res.status(422).json({
                     message: 'Password is incorrect.'
