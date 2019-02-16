@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const dbConfig = require('../config/secret')
 
 exports.verifyToken = (req, res, next) => {
-    const token = req.cookies.auth
+    const token = req.cookies.auth || req.headers.authorization.split(' ')[1]
 
     if (!token) {
         return res.status(403).json({
