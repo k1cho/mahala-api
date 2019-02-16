@@ -7,11 +7,13 @@ const app = express()
 
 app.use(cookieParser())
 
+
 // app headers
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Authorization, Origin, X-Request-With, Content-Type, Accept');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     next();
 })
 
@@ -26,8 +28,10 @@ app.use(express.urlencoded({
 
 // routes
 const authRoutes = require('./routes/auth')
+const postRoutes = require('./routes/post')
 
 app.use('/api/mahala', authRoutes)
+app.use('/api/mahala', postRoutes)
 
 
 // mongo connection

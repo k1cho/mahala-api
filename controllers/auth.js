@@ -38,7 +38,7 @@ exports.register = async (req, res) => {
         })
     }
 
-    bcrypt.hash(req.body.password, 10).then((result) => {
+    return bcrypt.hash(req.body.password, 10).then((result) => {
         const user = {
             username: Helpers.firstUppercase(req.body.username),
             email: Helpers.lowerCase(req.body.email),
@@ -47,11 +47,13 @@ exports.register = async (req, res) => {
 
         User.create(user).then(user => {
             const token = jwt.sign({
-                data: user
+                userId: user.id,
+                email: user.email,
+                username: user.username
             }, dbConfig.secret, {
                 expiresIn: '24h'
             })
-            res.cookie('auth', token)
+            res.cookie('auth', token);
 
             return res.status(201).json({
                 message: 'User created successfully.',
@@ -89,11 +91,14 @@ exports.login = async (req, res) => {
                 })
             }
             const token = jwt.sign({
-                data: user
+                userId: user.id,
+                email: user.email,
+                username: user.username
             }, dbConfig.secret, {
                 expiresIn: '24h'
             })
-            res.cookie('auth', token)
+            res.cookie('auth', token);
+
             return res.status(200).json({
                 message: 'Successfully logged in.',
                 user,
