@@ -7,7 +7,7 @@ exports.index = (req, res, err) => {
     .find({})
     .populate('user')
     //.populate('comments')
-    //.populate('likes')
+    .populate('likes')
     .sort({
       createdAt: -1
     })
