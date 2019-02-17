@@ -34,9 +34,8 @@ exports.store = (req, res, err) => {
       $push: {
         posts: post
       }
-    }, (err) => {
-      console.log(err)
     })
+
     return res.status(201).json({
       message: 'Post created.',
       post: post
@@ -51,27 +50,45 @@ exports.store = (req, res, err) => {
 exports.like = (req, res) => {
   const postId = req.body._id
 
-  Like.create({
+  Like.findOne({
     post: postId,
     user: req.user._id
   }).then(like => {
-    Post.updateOne({
-      _id: postId
-    }, {
-      $push: {
-        likes: like._id
-      },
-      $inc: {
-        totalLikes: 1
-      }
-    }).then().catch(err => console.log(err))
 
-    return res.status(201).json({
-      message: 'Post liked.'
+    if (like != null) {
+      return res.status(422).json({
+        message: 'You can only like a Post once'
+      })
+    }
+
+    Like.create({
+      post: postId,
+      user: req.user._id,
+    }).then(like => {
+
+      Post.updateOne({
+        _id: postId,
+        'likes.user': {
+          $ne: req.user._id
+        }
+      }, {
+        $push: {
+          likes: like._id
+        },
+        $inc: {
+          totalLikes: 1
+        }
+      }).then(() => {
+        return res.status(201).json({
+          message: 'Post liked.'
+        })
+      }).catch(err => console.log(err))
+
+    }).catch(() => {
+      return res.status(422).json({
+        message: 'Could not like the post.'
+      })
     })
-  }).catch(() => {
-    return res.status(422).json({
-      message: 'Could not like the post.'
-    })
-  })
+
+  }).catch(err => console.log(err))
 }
