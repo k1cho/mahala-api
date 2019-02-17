@@ -1,5 +1,6 @@
 const Post = require('../models/post')
 const User = require('../models/user')
+const Like = require('../models/like')
 
 exports.index = (req, res, err) => {
   Post
@@ -43,6 +44,34 @@ exports.store = (req, res, err) => {
   }).catch(err => {
     res.status(422).json({
       message: 'Could not create post.'
+    })
+  })
+}
+
+exports.like = (req, res) => {
+  const postId = req.body._id
+
+  Like.create({
+    post: postId,
+    user: req.user._id
+  }).then(like => {
+    Post.updateOne({
+      _id: postId
+    }, {
+      $push: {
+        likes: like._id
+      },
+      $inc: {
+        totalLikes: 1
+      }
+    }).then().catch(err => console.log(err))
+
+    return res.status(201).json({
+      message: 'Post liked.'
+    })
+  }).catch(() => {
+    return res.status(422).json({
+      message: 'Could not like the post.'
     })
   })
 }

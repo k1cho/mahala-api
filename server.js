@@ -44,6 +44,11 @@ mongoose.set('useCreateIndex', true);
 
 require('./socket/streams')(io)
 
+server.listen(port)
+
+
+
+
 
 // routes
 const authRoutes = require('./routes/auth')
@@ -53,8 +58,5 @@ app.use('/api/mahala', authRoutes)
 app.use('/api/mahala/posts/', postRoutes)
 
 
-
-
-server.listen(port)
 
 module.exports = app;
