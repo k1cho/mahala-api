@@ -20,6 +20,32 @@ exports.index = (req, res, err) => {
     })
 }
 
+exports.findById = (req, res) => {
+  Post
+    .findById({
+      '_id': req.params.id
+    })
+    .populate('user')
+    .populate({
+      path: 'comments',
+      // Get user of comments - populate the 'user' array for every friend
+      populate: {
+        path: 'user'
+      }
+    })
+    .populate('likes')
+    .sort({
+      createdAt: -1
+    })
+    .exec(function (err, post) {
+      if (err) {
+        return res.status(422).json(err)
+      }
+
+      return res.status(200).json(post)
+    })
+}
+
 exports.store = (req, res, err) => {
   const post = {
     user: req.user._id,
