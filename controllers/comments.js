@@ -25,6 +25,10 @@ exports.store = (req, res) => {
             }
         }).then().catch(err => console.log(err))
 
+        return res.status(201).json({
+            message: 'Comment created.'
+        })
+
     }).catch(() => {
         return res.status(422).json({
             message: 'Could not create the comment.'

@@ -1,6 +1,6 @@
 module.exports = function (io) {
     io.on('connection', (socket) => {
-        socket.on('refresh', (data) => {
+        socket.on('refresh', () => {
             io.emit('refreshPage', {})
         })
     })
