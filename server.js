@@ -54,11 +54,12 @@ server.listen(port)
 const authRoutes = require('./routes/auth')
 const postRoutes = require('./routes/post')
 const commentRoutes = require('./routes/comment')
+const userRoutes = require('./routes/user')
 
 app.use('/api/mahala', authRoutes)
 app.use('/api/mahala/posts/', postRoutes)
 app.use('/api/mahala/comments/', commentRoutes)
-
+app.use('/api/mahala/users/', userRoutes)
 
 
 module.exports = app;
