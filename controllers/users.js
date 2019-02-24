@@ -6,6 +6,8 @@ exports.index = (req, res, err) => {
     User
         .find({})
         .populate('posts')
+        .populate('following')
+        .populate('followers')
         .sort({
             createdAt: -1
         })
@@ -15,5 +17,25 @@ exports.index = (req, res, err) => {
             }
 
             return res.status(200).json(users)
+        })
+}
+
+exports.show = (req, res, err) => {
+    User
+        .findOne({
+            _id: req.params.id
+        })
+        .populate('posts')
+        .populate('following')
+        .populate('followers')
+        .sort({
+            createdAt: -1
+        })
+        .exec((err, user) => {
+            if (err) {
+                return res.status(422).json(err)
+            }
+
+            return res.status(200).json(user)
         })
 }
