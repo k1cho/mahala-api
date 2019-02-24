@@ -55,11 +55,13 @@ const authRoutes = require('./routes/auth')
 const postRoutes = require('./routes/post')
 const commentRoutes = require('./routes/comment')
 const userRoutes = require('./routes/user')
+const followRoutes = require('./routes/follow')
 
 app.use('/api/mahala', authRoutes)
 app.use('/api/mahala/posts/', postRoutes)
 app.use('/api/mahala/comments/', commentRoutes)
 app.use('/api/mahala/users/', userRoutes)
+app.use('/api/mahala/follows/', followRoutes)
 
 
 module.exports = app;
