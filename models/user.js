@@ -38,6 +38,31 @@ const userSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
+    notifications: [{
+        sender: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        message: {
+            type: String
+        },
+        viewProfile: {
+            type: Boolean,
+            default: false
+        },
+        read: {
+            type: Boolean,
+            default: false
+        },
+        date: {
+            type: String,
+            default: ''
+        },
+        created: {
+            type: Date,
+            default: Date.now()
+        }
+    }]
 })
 
 module.exports = mongoose.model('User', userSchema)

@@ -11,9 +11,7 @@ exports.follow = (req, res, err) => {
             }
         }, {
             $push: {
-                following: {
-                    _id: req.body.userId
-                }
+                following: req.body.userId
             }
         }).then().catch(() => {
             return res.status(422).json({
@@ -28,8 +26,11 @@ exports.follow = (req, res, err) => {
             }
         }, {
             $push: {
-                followers: {
-                    _id: req.user._id
+                followers: req.user._id,
+                notifications: {
+                    sender: req.user._id,
+                    message: req.user.username + ' followed you.',
+                    created: new Date(),
                 }
             }
         }).then().catch(() => {
