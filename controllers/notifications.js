@@ -1,7 +1,7 @@
 const User = require('../models/user')
 
 exports.markAsRead = async (req, res, err) => {
-    if (!req.body.deleteVal) {
+    if (!req.body.deleteValue) {
         await User.updateOne({
             _id: req.user._id,
             'notifications._id': req.params.id
@@ -19,10 +19,25 @@ exports.markAsRead = async (req, res, err) => {
                 error: err
             })
         })
+    } else {
+        await User.updateOne({
+            _id: req.user._id,
+            'notifications._id': req.params.id
+        }, {
+            $pull: {
+                notifications: {
+                    _id: req.params.id
+                }
+            }
+        }).then(() => {
+            return res.status(201).json({
+                message: 'Notification deleted.'
+            })
+        }).catch(err => {
+            return res.status(422).json({
+                message: 'Something went wrong',
+                error: err
+            })
+        })
     }
-}
-
-exports.delete = (req, res, err) => {
-    console.log(req.body);
-
 }
