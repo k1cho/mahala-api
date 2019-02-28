@@ -49,3 +49,41 @@ exports.follow = (req, res, err) => {
         })
     })
 }
+
+exports.unfollow = (req, res, err) => {
+    const unfollowUser = async () => {
+        await User.updateOne({
+            _id: req.user._id
+        }, {
+            $pull: {
+                following: req.body.userId
+            }
+        }).then().catch(() => {
+            return res.status(422).json({
+                message: 'Cannot update following: Cannot unfollow a User that you are not following.'
+            })
+        })
+
+        await User.updateOne({
+            _id: req.body.userId
+        }, {
+            $pull: {
+                followers: req.user._id
+            }
+        }).then().catch(() => {
+            return res.status(422).json({
+                message: 'Cannot update followers: Cannot unfollow a User that you are not following.'
+            })
+        })
+    }
+
+    unfollowUser().then(() => {
+        return res.status(201).json({
+            message: 'User unfollowed'
+        })
+    }).catch(() => {
+        return res.status(422).json({
+            message: 'Something went wrong'
+        })
+    })
+}
