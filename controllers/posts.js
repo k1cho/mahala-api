@@ -20,6 +20,34 @@ exports.index = (req, res, err) => {
     })
 }
 
+exports.topPosts = (req, res, err) => {
+  const date = new Date();
+  date.setMonth(date.getMonth() - 1)
+
+  Post
+    .find({
+      totalLikes: {
+        $gte: 2
+      },
+      createdAt: {
+        $gte: date
+      }
+    })
+    .populate('user')
+    .populate('comments')
+    .populate('likes')
+    .sort({
+      totalLikes: -1,
+    })
+    .exec(function (err, posts) {
+      if (err) {
+        return res.status(422).json(err)
+      }
+
+      return res.status(200).json(posts)
+    })
+}
+
 exports.findById = (req, res) => {
   Post
     .findById({
