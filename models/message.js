@@ -11,7 +11,7 @@ const messageSchema = mongoose.Schema({
     receiver: {
         type: String
     },
-    message: [{
+    messages: [{
         senderId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
@@ -20,10 +20,10 @@ const messageSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
-        sendername: {
+        senderName: {
             type: String
         },
-        receivername: {
+        receiverName: {
             type: String
         },
         body: {
