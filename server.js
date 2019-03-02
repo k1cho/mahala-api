@@ -57,6 +57,7 @@ const commentRoutes = require('./routes/comment')
 const userRoutes = require('./routes/user')
 const followRoutes = require('./routes/follow')
 const notificationsRoutes = require('./routes/notification')
+const messagesRoutes = require('./routes/message')
 
 app.use('/api/mahala', authRoutes)
 app.use('/api/mahala/posts/', postRoutes)
@@ -64,6 +65,7 @@ app.use('/api/mahala/comments/', commentRoutes)
 app.use('/api/mahala/users/', userRoutes)
 app.use('/api/mahala/follows/', followRoutes)
 app.use('/api/mahala/notifications/', notificationsRoutes)
+app.use('/api/mahala/messages/', messagesRoutes)
 
 
 module.exports = app;
