@@ -39,3 +39,23 @@ exports.show = (req, res, err) => {
             return res.status(200).json(user)
         })
 }
+
+exports.getUserByUsername = (req, res, err) => {
+    User
+        .findOne({
+            username: req.params.username
+        })
+        .populate('posts')
+        .populate('following')
+        .populate('followers')
+        .sort({
+            createdAt: -1
+        })
+        .exec((err, user) => {
+            if (err) {
+                return res.status(422).json(err)
+            }
+
+            return res.status(200).json(user)
+        })
+}

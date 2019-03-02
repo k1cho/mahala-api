@@ -1,6 +1,4 @@
-const Post = require('../models/post')
 const User = require('../models/user')
-const Like = require('../models/like')
 
 exports.follow = (req, res, err) => {
     const followUser = async () => {

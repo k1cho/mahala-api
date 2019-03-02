@@ -5,6 +5,7 @@ const UsersController = require('../controllers/users')
 const AuthMiddleware = require('../middlewares/authMiddleware')
 
 router.get('', AuthMiddleware.verifyToken, UsersController.index)
-router.get('/:id', AuthMiddleware.verifyToken, UsersController.show)
+router.get('/id/:id', AuthMiddleware.verifyToken, UsersController.show)
+router.get('/username/:username', AuthMiddleware.verifyToken, UsersController.getUserByUsername)
 
 module.exports = router
