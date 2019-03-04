@@ -2,7 +2,7 @@ const User = require('../models/user')
 const Message = require('../models/message')
 const Conversation = require('../models/conversation')
 
-exports.store = (req, res, err) => {
+exports.store = async (req, res, err) => {
     Conversation.find({
         $or: [{
             participants: {
@@ -107,4 +107,39 @@ exports.store = (req, res, err) => {
                 })
         }
     })
+}
+
+exports.getAll = async (req, res, err) => {
+    const convo = await Conversation.findOne({
+        $or: [{
+                $and: [{
+                        'participants.senderId': req.params.senderId
+                    },
+                    {
+                        'participants.receiverId': req.params.receiverId
+                    }
+                ]
+            },
+            {
+                $and: [{
+                        'participants.receiverId': req.params.senderId
+                    },
+                    {
+                        'participants.senderId': req.params.receiverId
+                    }
+                ]
+            },
+        ]
+    }).select('_id')
+
+    if (convo) {
+        const messages = await Message.findOne({
+            conversationId: convo._id
+        })
+        return res.status(200).json(messages)
+    } else {
+        return res.status(404).json({
+            message: 'Conversation not found.'
+        })
+    }
 }
