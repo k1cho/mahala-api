@@ -43,6 +43,7 @@ mongoose.connect(dbConfig.mongoConnectionUrl, {
 mongoose.set('useCreateIndex', true);
 
 require('./socket/streams')(io)
+require('./socket/chat')(io)
 
 server.listen(port)
 
