@@ -8,6 +8,8 @@ exports.index = (req, res, err) => {
         .populate('posts')
         .populate('following')
         .populate('followers')
+        .populate('chats.receiverId')
+        .populate('chats.msgId')
         .sort({
             createdAt: -1
         })
@@ -28,6 +30,8 @@ exports.show = (req, res, err) => {
         .populate('posts')
         .populate('following')
         .populate('followers')
+        .populate('chats.receiverId')
+        .populate('chats.msgId')
         .sort({
             createdAt: -1
         })
@@ -48,6 +52,8 @@ exports.getUserByUsername = (req, res, err) => {
         .populate('posts')
         .populate('following')
         .populate('followers')
+        .populate('chats.receiverId')
+        .populate('chats.msgId')
         .sort({
             createdAt: -1
         })

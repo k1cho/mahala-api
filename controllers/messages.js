@@ -1,6 +1,7 @@
 const User = require('../models/user')
 const Message = require('../models/message')
 const Conversation = require('../models/conversation')
+const Helper = require('../helpers/helpers')
 
 exports.store = async (req, res, err) => {
     Conversation.find({
@@ -21,6 +22,10 @@ exports.store = async (req, res, err) => {
         }]
     }, async (err, result) => {
         if (result.length > 0) {
+            const msg = await Message.findOne({
+                conversationId: result[0]._id
+            })
+            Helper.updateChatList(req, msg)
             await Message.updateOne({
                     conversationId: result[0]._id
                 }, {
