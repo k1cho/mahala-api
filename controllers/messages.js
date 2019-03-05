@@ -148,3 +148,38 @@ exports.getAll = async (req, res, err) => {
         })
     }
 }
+
+exports.markReceiverMessage = async (req, res) => {
+    const msg = await Message.aggregate([{
+        $unwind: '$messages'
+    }, {
+        $match: {
+            $and: [{
+                'messages.senderName': req.params.receiver,
+                'messages.receiverName': req.params.sender
+            }]
+        }
+    }])
+
+    if (msg.length > 0) {
+        try {
+            msg.forEach(async (value) => {
+                await Message.updateOne({
+                    'messages._id': value.messages._id
+                }, {
+                    $set: {
+                        'messages.$.isRead': true
+                    }
+                })
+            })
+            return res.status(200).json({
+                message: 'Messages marked as read.'
+            })
+        } catch (err) {
+            return res.status(422).json({
+                message: 'Error occured.'
+            })
+        }
+    }
+
+}
