@@ -3,11 +3,16 @@ const mongoose = require('mongoose')
 const dbConfig = require('./config/secret')
 const cookieParser = require('cookie-parser')
 const http = require('http');
+const _ = require('lodash')
 
 const app = express()
 const port = 3001;
 const server = http.createServer(app)
 const io = require('socket.io')(server)
+
+const {
+    User
+} = require('./helpers/UserClass')
 
 app.use(cookieParser())
 
@@ -42,7 +47,7 @@ mongoose.connect(dbConfig.mongoConnectionUrl, {
     })
 mongoose.set('useCreateIndex', true);
 
-require('./socket/streams')(io)
+require('./socket/streams')(io, User, _)
 require('./socket/chat')(io)
 
 server.listen(port)
