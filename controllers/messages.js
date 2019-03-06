@@ -161,6 +161,27 @@ exports.markReceiverMessage = async (req, res) => {
         }
     }])
 
+    updateMessage(msg, res)
+
+}
+
+exports.markAll = async (req, res) => {
+    const msg = await Message.aggregate([{
+        $match: {
+            'messages.receiverName': req.user.username
+        }
+    }, {
+        $unwind: '$messages'
+    }, {
+        $match: {
+            'messages.receiverName': req.user.username
+        }
+    }])
+
+    updateMessage(msg, res)
+}
+
+function updateMessage(msg, res) {
     if (msg.length > 0) {
         try {
             msg.forEach(async (value) => {
@@ -181,5 +202,4 @@ exports.markReceiverMessage = async (req, res) => {
             })
         }
     }
-
 }
