@@ -12,5 +12,15 @@ module.exports = function (io, User, _) {
             const list = user.getList(data.room)
             io.emit('usersOnline', _.uniq(list))
         })
+
+        socket.on('disconnect', () => {
+            const userData = user.removeUser(socket.id)
+            if (userData) {
+                const userArray = user.getList(userData.room)
+                const arr = _.uniq(userArray)
+                _.remove(arr, n => n === userData.name)
+                io.emit('usersOnline', arr)
+            }
+        })
     })
 }
