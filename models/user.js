@@ -72,7 +72,27 @@ const userSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Message'
         }
-    }]
+    }],
+    picVersion: {
+        type: String,
+        default: ''
+    },
+    picId: {
+        type: String,
+        default: ''
+    },
+    images: [{
+        imgId: {
+            type: String,
+            default: ''
+        },
+        imgVersion: {
+            type: String,
+            default: ''
+        }
+    }],
+
+
 })
 
 module.exports = mongoose.model('User', userSchema)
