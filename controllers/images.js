@@ -9,7 +9,6 @@ cloudinary.config({
 
 exports.uploadImage = (req, res, err) => {
     cloudinary.uploader.upload(req.body.image, async (result) => {
-        console.log(result);
         await User.updateOne({
             _id: req.user._id
         }, {
@@ -30,4 +29,22 @@ exports.uploadImage = (req, res, err) => {
         })
 
     })
+}
+
+exports.setProfilePic = async (req, res, err) => {
+    await User.updateOne({
+        _id: req.user._id
+    }, {
+        picId: req.params.imgId,
+        picVersion: req.params.imgVersion
+    }).then(() => {
+        return res.status(201).json({
+            message: 'Profile picture changed successfully.'
+        })
+    }).catch(() => {
+        return res.status(422).json({
+            error: 'Error occured.'
+        })
+    })
+
 }

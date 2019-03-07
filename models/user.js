@@ -75,11 +75,11 @@ const userSchema = mongoose.Schema({
     }],
     picVersion: {
         type: String,
-        default: ''
+        default: '1551971049'
     },
     picId: {
         type: String,
-        default: ''
+        default: 'default.png'
     },
     images: [{
         imgId: {
