@@ -10,6 +10,7 @@ exports.index = (req, res, err) => {
         .populate('followers')
         .populate('chats.receiverId')
         .populate('chats.msgId')
+        .populate('notifications.sender')
         .sort({
             createdAt: -1
         })
@@ -32,6 +33,7 @@ exports.show = (req, res, err) => {
         .populate('followers')
         .populate('chats.receiverId')
         .populate('chats.msgId')
+        .populate('notifications.sender')
         .sort({
             createdAt: -1
         })
@@ -54,6 +56,7 @@ exports.getUserByUsername = (req, res, err) => {
         .populate('followers')
         .populate('chats.receiverId')
         .populate('chats.msgId')
+        .populate('notifications.sender')
         .sort({
             createdAt: -1
         })
