@@ -9,6 +9,14 @@ const postSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    imgVersion: {
+        type: String,
+        default: ''
+    },
+    imgId: {
+        type: String,
+        default: ''
+    },
     createdAt: {
         type: Date,
         default: Date.now()

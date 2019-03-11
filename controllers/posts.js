@@ -1,6 +1,14 @@
 const Post = require('../models/post')
 const User = require('../models/user')
 const Like = require('../models/like')
+const cloudinary = require('cloudinary')
+
+cloudinary.config({
+  cloud_name: 'dj7a0d88z',
+  api_key: '225984538533363',
+  api_secret: '14TrHwbq3N09XKqpq4rRJPp0H_M'
+});
+
 
 exports.index = (req, res, err) => {
   Post
@@ -75,30 +83,60 @@ exports.findById = (req, res) => {
 }
 
 exports.store = (req, res, err) => {
+
   const post = {
     user: req.user._id,
     post: req.body.post,
     createdAt: new Date()
   }
 
-  Post.create(post).then(post => {
-    User.updateOne({
-      _id: req.user._id
-    }, {
-      $push: {
-        posts: post
+  if (req.body.image) {
+    cloudinary.uploader.upload(req.body.image, async (result) => {
+      const reqBody = {
+        user: req.user._id,
+        post: req.body.post,
+        imgId: result.public_id,
+        imgVersion: result.version,
+        createdAt: new Date()
       }
-    })
 
-    return res.status(201).json({
-      message: 'Post created.',
-      post: post
+      await Post.create(reqBody).then(post => {
+        User.updateOne({
+          _id: req.user._id
+        }, {
+          $push: {
+            posts: post
+          }
+        })
+
+        return res.status(201).json({
+          message: 'Post created.'
+        })
+      }).catch(() => {
+        res.status(422).json({
+          message: 'Could not create post.'
+        })
+      })
     })
-  }).catch(err => {
-    res.status(422).json({
-      message: 'Could not create post.'
+  } else {
+    Post.create(post).then(post => {
+      User.updateOne({
+        _id: req.user._id
+      }, {
+        $push: {
+          posts: post
+        }
+      })
+
+      return res.status(201).json({
+        message: 'Post created.'
+      })
+    }).catch(() => {
+      res.status(422).json({
+        message: 'Could not create post.'
+      })
     })
-  })
+  }
 }
 
 exports.like = (req, res) => {
