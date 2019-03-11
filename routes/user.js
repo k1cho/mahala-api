@@ -8,5 +8,6 @@ router.get('', AuthMiddleware.verifyToken, UsersController.index)
 router.get('/id/:id', AuthMiddleware.verifyToken, UsersController.show)
 router.get('/username/:username', AuthMiddleware.verifyToken, UsersController.getUserByUsername)
 router.post('/view-profile', AuthMiddleware.verifyToken, UsersController.viewProfile)
+router.put('/change-password', AuthMiddleware.verifyToken, UsersController.changePassword)
 
 module.exports = router

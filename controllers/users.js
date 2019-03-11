@@ -1,7 +1,6 @@
-const Post = require('../models/post')
 const User = require('../models/user')
-const Like = require('../models/like')
 const moment = require('moment')
+const bcrypt = require('bcryptjs')
 
 exports.index = (req, res, err) => {
     User
@@ -96,11 +95,40 @@ exports.viewProfile = async (req, res) => {
         }
     }).then(() => {
         return res.status(201).json({
-            message: 'Notification sent'
+            message: 'Notification sent.'
         })
     }).catch(() => {
         return res.status(422).json({
-            message: 'Error occured'
+            message: 'Error occured.'
+        })
+    })
+}
+
+exports.changePassword = async (req, res) => {
+    const user = await User.findOne({
+        _id: req.user._id
+    })
+
+    bcrypt.compare(req.body.currentPassword, user.password).then(async (password) => {
+        if (!password) {
+            return res.status(404).json({
+                message: 'Current password is incorrect.'
+            })
+        }
+
+        const newPassword = await User.EncryptPassword(req.body.newPassword)
+        await User.updateOne({
+            _id: req.user._id
+        }, {
+            password: newPassword
+        }).then(() => {
+            return res.status(201).json({
+                message: 'Password changed successfully.'
+            })
+        }).catch(() => {
+            return res.status(422).json({
+                message: 'Error occured.'
+            })
         })
     })
 }
