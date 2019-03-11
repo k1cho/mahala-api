@@ -1,6 +1,7 @@
 const Post = require('../models/post')
 const User = require('../models/user')
 const Like = require('../models/like')
+const moment = require('moment')
 
 exports.index = (req, res, err) => {
     User
@@ -52,6 +53,7 @@ exports.getUserByUsername = (req, res, err) => {
             username: req.params.username
         })
         .populate('posts')
+        .populate('posts.user')
         .populate('following')
         .populate('followers')
         .populate('chats.receiverId')
@@ -67,4 +69,38 @@ exports.getUserByUsername = (req, res, err) => {
 
             return res.status(200).json(user)
         })
+}
+
+exports.viewProfile = async (req, res) => {
+    date = moment().format('YYYY-MM-DD')
+
+    await User.updateOne({
+        _id: req.body.id,
+        'notifications.date': {
+            $ne: [
+                date, ''
+            ]
+        },
+        'notifications.sender': {
+            $ne: req.user._id
+        }
+    }, {
+        $push: {
+            notifications: {
+                sender: req.user._id,
+                message: req.user.username + ' viewed your Profile.',
+                created: new Date(),
+                date: date,
+                viewProfile: true
+            }
+        }
+    }).then(() => {
+        return res.status(201).json({
+            message: 'Notification sent'
+        })
+    }).catch(() => {
+        return res.status(422).json({
+            message: 'Error occured'
+        })
+    })
 }
